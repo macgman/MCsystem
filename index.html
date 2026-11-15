@@ -44,6 +44,22 @@ th,td{padding:9px 8px;border-bottom:1px solid var(--bd);text-align:right;white-s
 th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--cd)}
 th{color:var(--mu);font-weight:600}tfoot td{font-weight:700;color:var(--ac)}
 #toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:20px;font-size:14px;z-index:30;display:none;max-width:90%}
+:root{--g1:#ff4d1a;--g2:#ffb300}
+#app{max-width:640px}
+#app>*{animation:fi .35s both}@keyframes fi{from{opacity:0;transform:translateY(8px)}}
+.b,#nav .fab,.chips .on,.cc .sel{background:linear-gradient(135deg,var(--g1),var(--g2));border-color:transparent;color:#fff}
+.big{background:linear-gradient(90deg,var(--g1),var(--g2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero{border-radius:22px;padding:18px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;display:flex;justify-content:space-between;align-items:center;gap:12px;box-shadow:0 10px 28px rgba(0,0,0,.25);margin:10px 0}
+.hero .big{background:none;-webkit-text-fill-color:#fff;color:#fff;font-size:34px}
+.ring{width:80px;height:80px;border-radius:50%;background:conic-gradient(#fff calc(var(--p)*1%),rgba(255,255,255,.28) 0);display:grid;place-items:center;flex:none}
+.ring b{width:62px;height:62px;border-radius:50%;background:rgba(0,0,0,.3);display:grid;place-items:center;font-size:15px}
+.dn{width:120px;height:120px;border-radius:50%;flex:none;display:grid;place-items:center}.dn i{width:72px;height:72px;border-radius:50%;background:var(--cd)}
+.lgd{flex:1;min-width:0}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.av{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:21px;flex:none}
+.sw{width:36px;height:36px;border-radius:50%;border:3px solid transparent;flex:none}.sw.on2{border-color:var(--tx)}
+.cc{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}.cc button{padding:9px 13px;border-radius:14px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:15px}
+.amt{font-size:38px;font-weight:800;text-align:center}
+#nav{margin:0 10px 8px;border-radius:24px;border:1px solid var(--bd);backdrop-filter:blur(14px)}
 </style></head><body>
 <div id="app"></div><div id="nav"></div><div id="modal"></div><div id="toast"></div>
 <script>
@@ -52,7 +68,7 @@ const mem={};
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v===null?(k in mem?mem[k]:d):JSON.parse(v)}catch(e){return k in mem?mem[k]:d}},set(k,v){mem[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const p2=n=>String(n).padStart(2,'0'),iso=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()),pd=s=>new Date(s+'T00:00:00');
-const money=n=>'$'+(+n).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
+const money=n=>th.c+(+n).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fdate=s=>pd(s).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'});
 const sum=L=>L.reduce((s,e)=>s+e.m,0);
 const b64=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
@@ -83,22 +99,44 @@ if(mode=='mes')return a.toLocaleDateString('es-MX',{month:'long',year:'numeric'}
 if(mode=='qui')return(a.getDate()==1?'1ª':'2ª')+' quincena · '+a.toLocaleDateString('es-MX',{month:'long',year:'numeric'});
 return f(a)+' – '+f(b)+' '+b.getFullYear()}
 function sm(k){if(k=='rng'){const[a,b]=rg();rf=iso(a);rt=iso(b)}mode=k;R()}
-function sh(n){const y=anc.getFullYear(),m=anc.getMonth(),d=anc.getDate();
-anc=mode=='dia'?new Date(y,m,d+n):mode=='sem'?new Date(y,m,d+7*n):mode=='qui'?(n>0?(d<=15?new Date(y,m,16):new Date(y,m+1,1)):(d>15?new Date(y,m,1):new Date(y,m-1,16))):new Date(y,m+n,1);R()}
+function nxt(n){const y=anc.getFullYear(),m=anc.getMonth(),d=anc.getDate();
+return mode=='dia'?new Date(y,m,d+n):mode=='sem'?new Date(y,m,d+7*n):mode=='qui'?(n>0?(d<=15?new Date(y,m,16):new Date(y,m+1,1)):(d>15?new Date(y,m,1):new Date(y,m-1,16))):new Date(y,m+n,1)}
+function sh(n){anc=nxt(n);R()}
 const chips=()=>`<div class="chips">${[['dia','Día'],['sem','Semana'],['qui','Quincena'],['mes','Mes'],['rng','Rango']].map(([k,n])=>`<button class="${mode==k?'on':''}" onclick="sm('${k}')">${n}</button>`).join('')}</div>`;
 const navp=()=>mode=='rng'?`<div class="row"><input type="date" value="${rf}" onchange="rf=this.value;R()"><input type="date" value="${rt}" onchange="rt=this.value;R()"></div>`:`<div class="nv"><button onclick="sh(-1)">‹</button><b style="text-transform:capitalize;text-align:center">${lbl()}</b><button onclick="sh(1)">›</button></div><div class="row"><button class="ic mu" onclick="anc=new Date();R()">Hoy</button><input type="date" style="width:auto" value="${iso(anc)}" onchange="if(this.value){anc=pd(this.value);R()}"></div>`;
 /* ---- vistas ---- */
 function vHome(){const[a,b]=rg(),A=iso(a),B=iso(b),L=D.exp.filter(e=>e.f>=A&&e.f<=B),T=sum(L),bc={};
 L.forEach(e=>bc[e.c]=(bc[e.c]||0)+e.m);const mx=Math.max(1,...Object.values(bc)),days=[...new Set(L.map(e=>e.f))].sort().reverse(),nd=Math.round((b-a)/864e5)+1;
-return `<div class="row"><span style="display:flex;align-items:center;gap:8px">${logo(42)}<span><div class="brand sm" style="text-align:left">MC SYSTEM</div><div class="mu s">👤 ${esc(U)}</div></span></span><span class="mu s">${LIC?'Licencia activa':'Prueba: '+trial()+' día(s)'}</span></div>${chips()}${navp()}
-<div class="card"><div class="mu">Total del periodo</div><div class="big">${money(T)}</div><div class="mu s">${L.length} gasto(s)${L.length?' · promedio por día '+money(T/nd):''}</div></div>
-${bcard(T)}
+return `<div class="row"><span style="display:flex;align-items:center;gap:8px">${logo(42)}<span><div class="brand sm" style="text-align:left">MC SYSTEM</div><div class="mu s">Hola, ${esc(U)} 👋</div></span></span><span class="mu s">${LIC?'Licencia activa':'Prueba: '+trial()+' día(s)'}</span></div>${chips()}${navp()}
+${hero(T,L)}
 ${nd>1&&nd<=62&&L.length?chart(a,nd,L):''}
-${Object.keys(bc).length?`<div class="card">${Object.entries(bc).sort((x,y)=>y[1]-x[1]).map(([c,v])=>{const g=mode=='mes'&&D.bud&&D.bud[c];return `<div><div class="row"><span>${esc(c)}</span><b>${money(v)}${g?` <span class="mu s">/ ${money(g)}</span>`:''}</b></div><div class="bar"><i style="width:${Math.min(100,g?v/g*100:v/mx*100)}%;${g&&v>g?'background:var(--rd)':''}"></i></div>${g&&v>g?`<div class="s" style="color:var(--rd)">Excedido por ${money(v-g)}</div>`:''}</div>`}).join('')}</div>`:''}
-${days.map(d=>{const q=L.filter(e=>e.f==d);return `<div class="dh"><span>${fdate(d)}</span><b>${money(sum(q))}</b></div>`+q.map(e=>`<div class="it" onclick="ed('${e.id}')"><div><div>${esc(e.n)}</div><div class="mu s">${esc(e.c)}${e.t?' · '+esc(e.t):''}</div></div><b>${money(e.m)}</b></div>`).join('')}).join('')||'<p class="mu c">Sin gastos en este periodo.<br>Toca ＋ para agregar.</p>'}`}
+${donut(bc,T)}
+${days.map(d=>{const q=L.filter(e=>e.f==d);return `<div class="dh"><span>${fdate(d)}</span><b>${money(sum(q))}</b></div>`+q.map(e=>`<div class="it" onclick="ed('${e.id}')"><div class="av" style="background:${col(e.c)}33">${ico(e.c)}</div><div style="flex:1;min-width:0"><div>${esc(e.n)}</div><div class="mu s">${esc(e.c)}${e.t?' · '+esc(e.t):''}</div></div><b>${money(e.m)}</b></div>`).join('')}).join('')||'<div class="c"><div style="font-size:54px">🪙</div><p class="mu">Sin gastos en este periodo</p><button class="b sm" onclick="mod()">＋ Agregar gasto</button></div>'}`}
 let ip;addEventListener('beforeinstallprompt',e=>{e.preventDefault();ip=e;if(!document.activeElement||document.activeElement===document.body)R()});
 const vInst=()=>`${ip?'<button class="b" onclick="ip.prompt()">📲 Instalar ahora</button>':''}<h3>📲 Instalar en tu teléfono</h3><p class="mu s"><b>Android (Chrome):</b> menú ⋮ → «Instalar app» o «Agregar a pantalla de inicio».<br><b>iPhone (Safari):</b> botón Compartir → «Agregar a inicio».</p><p class="mu s"><b>Importante:</b> instala la app primero y crea la cuenta abriéndola desde su ícono. Tus datos se guardan en este teléfono, así que usa Respaldo en Ajustes de vez en cuando.</p>`;
 function logo(s){return `<svg class="lg" viewBox="0 0 120 120" width="${s}" height="${s}"><defs><linearGradient id="gf" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff3d00"/><stop offset=".55" stop-color="#ff9100"/><stop offset="1" stop-color="#ffd54a"/></linearGradient><linearGradient id="gd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2cf0b8"/><stop offset="1" stop-color="#0a7d8c"/></linearGradient></defs><circle cx="60" cy="60" r="57" fill="#0b1218" stroke="url(#gf)" stroke-width="3"/><path d="M50 104C14 100 8 68 28 58C46 49 40 34 30 33" fill="none" stroke="url(#gd)" stroke-width="9" stroke-linecap="round"/><path d="M14 30L33 20L42 29L32 40L20 38Z" fill="url(#gd)"/><path d="M22 24L14 10L32 19ZM33 20L40 8L42 24Z" fill="#19c9a0"/><circle cx="31" cy="30" r="2.4" fill="#ffd54a"/><path d="M30 56L24 50M26 70L19 66M34 88L27 88" stroke="#19c9a0" stroke-width="3" stroke-linecap="round"/><path d="M77 74C67 56 70 38 78 24C86 38 89 56 79 74Z" fill="url(#gf)"/><path d="M72 54C60 54 52 44 54 30C62 38 68 38 74 40ZM82 54C96 56 108 46 108 28C98 38 90 38 82 40Z" fill="url(#gf)"/><path d="M74 66C58 70 50 62 48 52C58 56 66 56 74 56ZM82 66C98 70 108 62 110 50C100 56 92 56 82 56Z" fill="url(#gf)" opacity=".8"/><path d="M76 72C70 88 66 98 73 110C75 98 80 92 77 72ZM80 72C86 88 90 98 84 110C80 98 77 92 79 72Z" fill="url(#gf)"/><circle cx="78" cy="22" r="5" fill="#ffd54a"/><path d="M76 18L78 8L82 18ZM83 22L90 24L83 26Z" fill="#ff9100"/></svg>`}
+const PAL={fuego:['#ff4d1a','#ffb300','#ff8a1f'],oceano:['#0ea5e9','#22d3ee','#38bdf8'],esmeralda:['#059669','#34d399','#10b981'],violeta:['#7c3aed','#d946ef','#a855f7'],rosa:['#e11d48','#fb923c','#f43f5e']},COL=['#ff6b35','#19c9a0','#ffb300','#6c8cff','#e056c4','#5cd65c','#ff4d6d','#9b7bff'];
+let th=Object.assign({m:'auto',a:'fuego',c:'$'},LS.get('cg_th',{})),mc;
+function ap(){const r=document.documentElement,p=PAL[th.a]||PAL.fuego;r.style.setProperty('--g1',p[0]);r.style.setProperty('--g2',p[1]);r.style.setProperty('--ac',p[2]);if(th.m=='auto')r.removeAttribute('data-theme');else r.dataset.theme=th.m}
+function st(k,v){th[k]=v;LS.set('cg_th',th);ap();R()}
+function fit(){const w=innerWidth,sw=Math.min(screen.width,screen.height),fk=matchMedia('(pointer:coarse)').matches&&sw<700&&w>sw*1.3;document.body.style.zoom=fk?Math.min(3,w/sw):''}
+const ico=c=>{c=c.toLowerCase();const f=[[/comid|aliment|super|restau|almuer|cena/,'🍔'],[/transp|gasolin|taxi|bus|auto|carro|moto/,'🚌'],[/servic|luz|agua|internet|renta|casa|hogar/,'💡'],[/salud|medic|farm/,'💊'],[/ocio|diver|cine|fiesta|juego/,'🎮'],[/ropa|vest|calzad/,'👕'],[/educ|escuela|curso|libro/,'📚'],[/mascot|perro|gato/,'🐶'],[/otro/,'📦']].find(x=>x[0].test(c));return f?f[1]:'🏷️'};
+const col=c=>COL[Math.max(0,D.cats.indexOf(c))%8];
+function pT(){if(mode=='rng')return 0;const o=anc;anc=nxt(-1);const[a,b]=rg();anc=o;const A=iso(a),B=iso(b);return sum(D.exp.filter(e=>e.f>=A&&e.f<=B))}
+function hero(T,L){const g=mode!='rng'&&D.gb&&D.gb[mode],pv=pT(),cmp=pv>0?`${T>pv?'▲':'▼'} ${Math.abs(Math.round((T-pv)/pv*100))}% vs periodo anterior`:'';
+return `<div class="hero"><div><div style="opacity:.85;font-size:14px">${g?(T>g?'Te pasaste del presupuesto':'Disponible'):'Total del periodo'}</div><div class="big">${money(g?Math.abs(g-T):T)}</div><div style="font-size:13px;opacity:.9">${g?'Gastado '+money(T)+' de '+money(g):L.length+' gasto(s)'}</div><div style="font-size:13px;opacity:.9;margin-top:4px">${cmp}</div></div>${g?`<div class="ring" style="--p:${Math.min(100,T/g*100)}"><b>${Math.round(T/g*100)}%</b></div>`:''}</div>${mode!='rng'?`<button class="b g" onclick="gb()">${g?'✎ Cambiar presupuesto '+MN[mode]:'＋ Definir presupuesto '+MN[mode]}</button>`:''}`}
+function donut(bc,T){const k=Object.entries(bc).sort((x,y)=>y[1]-x[1]);if(!k.length||!T)return'';let a=0;const seg=k.map(([c,v])=>{const s=a;a+=v/T*100;return`${col(c)} ${s}% ${a}%`}).join(',');
+return `<div class="card"><div class="row" style="gap:14px"><div class="dn" style="background:conic-gradient(${seg})"><i></i></div><div class="lgd">${k.map(([c,v])=>{const g=mode=='mes'&&D.bud&&D.bud[c];return `<div class="row" style="padding:3px 0;gap:6px"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><span class="dot" style="background:${col(c)}"></span>${esc(c)}</span><b style="font-size:14px;white-space:nowrap">${money(v)}${g?` <span class="mu s">/ ${money(g)}</span>`:''}${g&&v>g?' ⚠️':''}</b></div>`}).join('')}</div></div></div>`}
+function mod(e,f,c){const x=e||{f:f||iso(new Date()),n:'',c:c||D.cats[0],m:'',t:''};mc=x.c;
+$('#modal').innerHTML=`<div class="ov"><div class="sh"><div class="row"><h2>${e?'Editar gasto':'Nuevo gasto'}</h2><button class="ic" onclick="cl()">✕</button></div>
+<input id="mm" class="amt" type="number" inputmode="decimal" step="0.01" placeholder="${th.c}0.00" value="${x.m}">
+<label>Categoría</label><div class="cc" id="cc">${D.cats.map((k,i)=>`<button class="${k==mc?'sel':''}" onclick="pc(${i})">${ico(k)} ${esc(k)}</button>`).join('')}<button onclick="pc(-1)">＋ Nueva</button></div><input id="nc" style="display:none" placeholder="Nombre de la categoría">
+<label>Concepto</label><input id="mn" list="dl" value="${esc(x.n)}" placeholder="Ej. Almuerzo"><datalist id="dl">${[...new Set(D.exp.map(z=>z.n))].slice(0,60).map(n=>`<option value="${esc(n)}">`).join('')}</datalist>
+<label>Fecha</label><input id="mf" type="date" value="${x.f}">
+<label>Nota (opcional)</label><input id="mt" value="${esc(x.t)}">
+<div class="bt"><button class="b" onclick="sv('${e?e.id:''}')">Guardar</button>${e?`<button class="b d" onclick="dl('${e.id}')">Eliminar</button>`:`<button class="b g" onclick="sv('',1)">Guardar y otro</button>`}</div></div></div>`;setTimeout(()=>{if(!e)$('#mm').focus()},60)}
+function pc(i){mc=i<0?'__n':D.cats[i];$('#nc').style.display=i<0?'block':'none';if(i<0)$('#nc').focus();[...$('#cc').children].forEach((b,j)=>b.classList.toggle('sel',i<0?j==D.cats.length:j==i))}
+ap();fit();addEventListener('resize',fit);
 const MN={dia:'diario',sem:'semanal',qui:'quincenal',mes:'mensual'};
 function bcard(T){if(mode=='rng')return'';const g=D.gb&&D.gb[mode];
 if(!g)return `<button class="b g" onclick="gb()">＋ Definir presupuesto ${MN[mode]}</button>`;
@@ -115,6 +153,7 @@ function vLic(bl){return `<div class="${bl?'box':''}"><h2>🔑 Activación</h2>$
 async function act(){const c=$('#lc').value.trim();if(await lic(c)){LIC=true;LS.set('cg_lic',c);er('¡Activada!');R()}else er('Código inválido para este dispositivo')}
 function vLogin(){const f=!db.users.length;return `<div class="box">${logo(130)}<div class="brand" style="font-size:26px;margin-top:8px">MC SYSTEM</div><p class="mu c" style="padding:4px 0 10px;letter-spacing:2px">CONTROL DE GASTOS</p><p class="mu">${f?'Crea tu cuenta de administrador':'Inicia sesión'}</p><input id="lu" placeholder="Usuario" autocapitalize="none"><input id="lp" type="password" placeholder="Contraseña"><button class="b" onclick="${f?'reg()':'login()'}">${f?'Crear cuenta':'Entrar'}</button></div><div class="card" style="max-width:420px;margin:14px auto 0">${vLic(false)}</div><div class="card" style="max-width:420px;margin:14px auto 0">${vInst()}</div>`}
 function vSet(){const adm=db.users[0].u==U;return `<h2>Ajustes</h2>
+<div class="card"><h3>🎨 Apariencia</h3><div class="chips">${[['auto','Auto'],['dark','Oscuro'],['light','Claro']].map(([k,n])=>`<button class="${th.m==k?'on':''}" onclick="st('m','${k}')">${n}</button>`).join('')}</div><div class="row" style="justify-content:flex-start;gap:10px;margin:10px 0">${Object.entries(PAL).map(([k,p])=>`<button class="sw ${th.a==k?'on2':''}" style="background:linear-gradient(135deg,${p[0]},${p[1]})" onclick="st('a','${k}')"></button>`).join('')}</div><label>Moneda</label><select onchange="st('c',this.value)">${['$','S/','€','Q','L','Bs','₡','RD$','US$'].map(c=>`<option ${th.c==c?'selected':''}>${c}</option>`).join('')}</select></div>
 <div class="card"><h3>Categorías (columnas)</h3>${D.cats.map((c,i)=>`<div class="row"><span>${esc(c)}${D.bud&&D.bud[c]?` <span class="mu s">· presup. ${money(D.bud[c])}</span>`:''}</span><span><button class="ic" onclick="bd(${i})">💲</button><button class="ic" onclick="rn(${i})">✎</button><button class="ic" onclick="dc(${i})">🗑</button></span></div>`).join('')}<div class="row"><input id="ac" placeholder="Nueva categoría"><button class="b sm" onclick="addc()">Agregar</button></div></div>
 <div class="card"><h3>Mi contraseña</h3><input id="np" type="password" placeholder="Nueva contraseña"><button class="b sm" onclick="cp()">Cambiar</button></div>
 ${adm?`<div class="card"><h3>Usuarios</h3>${db.users.map((x,i)=>`<div class="row"><span>${esc(x.u)}${i?'':' (admin)'}</span>${i?`<button class="ic" onclick="du(${i})">🗑</button>`:''}</div>`).join('')}<input id="nu" placeholder="Usuario nuevo" autocapitalize="none"><input id="np2" type="password" placeholder="Contraseña"><button class="b sm" onclick="au()">Crear usuario</button></div>`:''}
@@ -140,15 +179,7 @@ function bd(i){const c=D.cats[i];ask('Presupuesto mensual de «'+esc(c)+'» (sol
 function dc(i){if(D.cats.length<2)return er('Debe quedar al menos una categoría');const c=D.cats[i];ask(`¿Eliminar «${esc(c)}»? Sus gastos pasarán a otra categoría.`,()=>{D.cats.splice(i,1);const t=D.cats.includes('Otros')?'Otros':D.cats[0];D.exp.forEach(e=>{if(e.c==c)e.c=t});if(D.bud)delete D.bud[c];save();R()})}
 /* ---- gastos ---- */
 const nw=(f,i)=>mod(null,f,i!=null?D.cats[i]:null),ed=id=>mod(D.exp.find(e=>e.id==id));
-function mod(e,f,c){const x=e||{f:f||iso(new Date()),n:'',c:c||D.cats[0],m:'',t:''};
-$('#modal').innerHTML=`<div class="ov"><div class="sh"><h2>${e?'Editar':'Nuevo'} gasto</h2>
-<label>Fecha</label><input id="mf" type="date" value="${x.f}">
-<label>Concepto</label><input id="mn" list="dl" value="${esc(x.n)}" placeholder="Ej. Almuerzo"><datalist id="dl">${[...new Set(D.exp.map(z=>z.n))].slice(0,60).map(n=>`<option value="${esc(n)}">`).join('')}</datalist>
-<label>Categoría (columna)</label><select id="mc" onchange="$('#nc').style.display=this.value=='__n'?'block':'none'">${D.cats.map(k=>`<option ${k==x.c?'selected':''}>${esc(k)}</option>`).join('')}<option value="__n">＋ Nueva categoría…</option></select><input id="nc" style="display:none" placeholder="Nombre de la categoría">
-<label>Monto</label><input id="mm" type="number" inputmode="decimal" step="0.01" value="${x.m}">
-<label>Nota (opcional)</label><input id="mt" value="${esc(x.t)}">
-<div class="bt"><button class="b" onclick="sv('${e?e.id:''}')">Guardar</button>${e?`<button class="b d" onclick="dl('${e.id}')">Eliminar</button>`:`<button class="b g" onclick="sv('',1)">Guardar y otro</button>`}<button class="b g" onclick="cl()">Cancelar</button></div></div></div>`}
-function sv(id,again){let c=$('#mc').value;if(c=='__n'){c=$('#nc').value.trim();if(!c)return er('Escribe el nombre de la categoría')}
+function sv(id,again){let c=mc;if(c=='__n'){c=$('#nc').value.trim();if(!c)return er('Escribe el nombre de la categoría')}
 const o={f:$('#mf').value,n:$('#mn').value.trim(),c,m:parseFloat($('#mm').value),t:$('#mt').value.trim()};
 if(!o.f||!o.n||isNaN(o.m)||o.m<0)return er('Completa fecha, concepto y monto');
 if(!D.cats.includes(c))D.cats.push(c);
