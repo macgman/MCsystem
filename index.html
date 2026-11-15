@@ -118,7 +118,7 @@ const TEL='529361271479',wa=t=>'https://wa.me/'+TEL+'?text='+encodeURIComponent(
 const vSup=()=>`<h3>💬 Soporte</h3><p class="mu s">Atención de 8:00 am a 10:00 pm (hora de México).</p><div class="bt"><a class="b" ${LB} href="${wa('Hola, necesito soporte con MC SYSTEM.')}">WhatsApp</a><a class="b g" ${LB} href="tel:+${TEL}">📞 Llamar</a></div><p class="mu s c" style="padding:6px 0 0">+52 936 127 1479</p>`;
 function logo(s){return `<svg class="lg" viewBox="0 0 120 120" width="${s}" height="${s}"><defs><linearGradient id="gf" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff3d00"/><stop offset=".55" stop-color="#ff9100"/><stop offset="1" stop-color="#ffd54a"/></linearGradient><linearGradient id="gd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2cf0b8"/><stop offset="1" stop-color="#0a7d8c"/></linearGradient></defs><circle cx="60" cy="60" r="57" fill="#0b1218" stroke="url(#gf)" stroke-width="3"/><path d="M50 104C14 100 8 68 28 58C46 49 40 34 30 33" fill="none" stroke="url(#gd)" stroke-width="9" stroke-linecap="round"/><path d="M14 30L33 20L42 29L32 40L20 38Z" fill="url(#gd)"/><path d="M22 24L14 10L32 19ZM33 20L40 8L42 24Z" fill="#19c9a0"/><circle cx="31" cy="30" r="2.4" fill="#ffd54a"/><path d="M30 56L24 50M26 70L19 66M34 88L27 88" stroke="#19c9a0" stroke-width="3" stroke-linecap="round"/><path d="M77 74C67 56 70 38 78 24C86 38 89 56 79 74Z" fill="url(#gf)"/><path d="M72 54C60 54 52 44 54 30C62 38 68 38 74 40ZM82 54C96 56 108 46 108 28C98 38 90 38 82 40Z" fill="url(#gf)"/><path d="M74 66C58 70 50 62 48 52C58 56 66 56 74 56ZM82 66C98 70 108 62 110 50C100 56 92 56 82 56Z" fill="url(#gf)" opacity=".8"/><path d="M76 72C70 88 66 98 73 110C75 98 80 92 77 72ZM80 72C86 88 90 98 84 110C80 98 77 92 79 72Z" fill="url(#gf)"/><circle cx="78" cy="22" r="5" fill="#ffd54a"/><path d="M76 18L78 8L82 18ZM83 22L90 24L83 26Z" fill="#ff9100"/></svg>`}
 const PAL={fuego:['#ff4d1a','#ffb300','#ff8a1f'],oceano:['#0ea5e9','#22d3ee','#38bdf8'],esmeralda:['#059669','#34d399','#10b981'],violeta:['#7c3aed','#d946ef','#a855f7'],rosa:['#e11d48','#fb923c','#f43f5e']},COL=['#ff6b35','#19c9a0','#ffb300','#6c8cff','#e056c4','#5cd65c','#ff4d6d','#9b7bff'];
-let th=Object.assign({m:'auto',a:'fuego',c:'$'},LS.get('cg_th',{})),mc;
+let th=Object.assign({m:'auto',a:'fuego',c:'$',to:30},LS.get('cg_th',{})),mc;
 function ap(){const r=document.documentElement,p=PAL[th.a]||PAL.fuego;r.style.setProperty('--g1',p[0]);r.style.setProperty('--g2',p[1]);r.style.setProperty('--ac',p[2]);if(th.m=='auto')r.removeAttribute('data-theme');else r.dataset.theme=th.m}
 function st(k,v){th[k]=v;LS.set('cg_th',th);ap();R()}
 function fit(){const w=innerWidth,sw=Math.min(screen.width,screen.height),fk=matchMedia('(pointer:coarse)').matches&&sw<700&&w>sw*1.3;document.body.style.zoom=fk?Math.min(3,w/sw):''}
@@ -147,6 +147,9 @@ function upd(){const F=fl(curL());$('#lst').innerHTML=lst(F);$('#fs').textConten
 function fcs(i){fc=i<0?'':D.cats[i];R()}
 function srch(L){if(fc&&!D.cats.includes(fc))fc='';const F=fl(L);return `<div class="card" style="padding:10px"><input id="qs" placeholder="🔍 Buscar gasto…" value="${esc(q)}" oninput="q=this.value;upd()" style="margin:0 0 8px"><div class="chips"><button class="${fc?'':'on'}" onclick="fcs(-1)">Todas</button>${D.cats.map((c,i)=>`<button class="${fc==c?'on':''}" onclick="fcs(${i})">${ico(c)} ${esc(c)}</button>`).join('')}</div><div class="mu s" id="fs">${(q||fc)?F.length+' resultado(s) · '+money(sum(F.filter(e=>!e.i))):''}</div></div>`}
 let ti=0;function sti(v){ti=v;$('#t0').classList.toggle('on',!v);$('#t1').classList.toggle('on',!!v);['#cc','#cl'].forEach(s=>$(s).style.display=v?'none':'');if(v)$('#nc').style.display='none'}
+const SS={get(){try{return JSON.parse(sessionStorage.getItem('cg_ss'))}catch(e){return null}},set(v){try{v?sessionStorage.setItem('cg_ss',JSON.stringify(v)):sessionStorage.removeItem('cg_ss')}catch(e){}}};
+let last=Date.now();
+function touch(){last=Date.now();if(U)SS.set({u:U,t:last})}
 const MN={dia:'diario',sem:'semanal',qui:'quincenal',mes:'mensual'};
 function bcard(T){if(mode=='rng')return'';const g=D.gb&&D.gb[mode];
 if(!g)return `<button class="b g" onclick="gb()">＋ Definir presupuesto ${MN[mode]}</button>`;
@@ -164,6 +167,7 @@ async function act(){const c=$('#lc').value.trim();if(await lic(c)){LIC=true;LS.
 function vLogin(){const f=!db.users.length;return `<div class="box">${logo(130)}<div class="brand" style="font-size:26px;margin-top:8px">MC SYSTEM</div><p class="mu c" style="padding:4px 0 10px;letter-spacing:2px">CONTROL DE GASTOS</p><p class="mu">${f?'Crea tu cuenta de administrador':'Inicia sesión'}</p><input id="lu" placeholder="Usuario" autocapitalize="none"><input id="lp" type="password" placeholder="Contraseña"><button class="b" onclick="${f?'reg()':'login()'}">${f?'Crear cuenta':'Entrar'}</button></div><div class="card" style="max-width:420px;margin:14px auto 0">${vLic(false)}</div><div class="card" style="max-width:420px;margin:14px auto 0">${vInst()}</div><div class="card" style="max-width:420px;margin:14px auto 0">${vSup()}</div>`}
 function vSet(){const adm=db.users[0].u==U;return `<h2>Ajustes</h2>
 <div class="card"><h3>🎨 Apariencia</h3><div class="chips">${[['auto','Auto'],['dark','Oscuro'],['light','Claro']].map(([k,n])=>`<button class="${th.m==k?'on':''}" onclick="st('m','${k}')">${n}</button>`).join('')}</div><div class="row" style="justify-content:flex-start;gap:10px;margin:10px 0">${Object.entries(PAL).map(([k,p])=>`<button class="sw ${th.a==k?'on2':''}" style="background:linear-gradient(135deg,${p[0]},${p[1]})" onclick="st('a','${k}')"></button>`).join('')}</div><label>Moneda</label><select onchange="st('c',this.value)">${['$','S/','€','Q','L','Bs','₡','RD$','US$'].map(c=>`<option ${th.c==c?'selected':''}>${c}</option>`).join('')}</select></div>
+<div class="card"><h3>🔒 Seguridad</h3><label>Cerrar sesión por inactividad</label><select onchange="st('to',+this.value)">${[[5,'5 minutos'],[15,'15 minutos'],[30,'30 minutos'],[60,'1 hora'],[240,'4 horas'],[0,'Nunca (solo al cerrar la app)']].map(([v,n])=>`<option value="${v}" ${th.to==v?'selected':''}>${n}</option>`).join('')}</select><p class="mu s">Puedes salir a WhatsApp u otra app sin perder tu sesión.</p></div>
 <div class="card"><h3>Categorías (columnas)</h3>${D.cats.map((c,i)=>`<div class="row"><span>${esc(c)}${D.bud&&D.bud[c]?` <span class="mu s">· presup. ${money(D.bud[c])}</span>`:''}</span><span><button class="ic" onclick="bd(${i})">💲</button><button class="ic" onclick="rn(${i})">✎</button><button class="ic" onclick="dc(${i})">🗑</button></span></div>`).join('')}<div class="row"><input id="ac" placeholder="Nueva categoría"><button class="b sm" onclick="addc()">Agregar</button></div></div>
 <div class="card"><h3>Mi contraseña</h3><input id="np" type="password" placeholder="Nueva contraseña"><button class="b sm" onclick="cp()">Cambiar</button></div>
 ${adm?`<div class="card"><h3>Usuarios</h3>${db.users.map((x,i)=>`<div class="row"><span>${esc(x.u)}${i?'':' (admin)'}</span>${i?`<button class="ic" onclick="du(${i})">🗑</button>`:''}</div>`).join('')}<input id="nu" placeholder="Usuario nuevo" autocapitalize="none"><input id="np2" type="password" placeholder="Contraseña"><button class="b sm" onclick="au()">Crear usuario</button></div>`:''}
@@ -175,10 +179,10 @@ $('#app').innerHTML=h;
 $('#nav').innerHTML=nv?`<button class="${tab=='inicio'?'a':''}" onclick="tab='inicio';R()">🏠<span>Inicio</span></button><button class="${tab=='tabla'?'a':''}" onclick="tab='tabla';R()">▦<span>Tabla</span></button><button class="fab" onclick="mod()">＋</button><button class="${tab=='ajustes'?'a':''}" onclick="tab='ajustes';R()">⚙️<span>Ajustes</span></button>`:''}
 /* ---- usuarios ---- */
 async function mk(u,p){const s=gen();db.users.push({u,s,h:await hp(p,s)});db.data[u]={cats:['Comida','Transporte','Servicios','Otros'],exp:[]};save()}
-function ses(u){U=u;LS.set('cg_ses',u);D=db.data[u];tab='inicio';R()}
+function ses(u){U=u;touch();D=db.data[u];tab='inicio';R()}
 async function reg(){const u=$('#lu').value.trim(),p=$('#lp').value;if(u.length<3||p.length<4)return er('Usuario mín. 3 y contraseña mín. 4 caracteres');await mk(u,p);ses(u)}
 async function login(){const u=$('#lu').value.trim().toLowerCase(),x=db.users.find(z=>z.u.toLowerCase()==u);if(!x||await hp($('#lp').value,x.s)!=x.h)return er('Usuario o contraseña incorrectos');ses(x.u)}
-function out(){U=null;D=null;LS.set('cg_ses',null);R()}
+function out(){U=null;D=null;SS.set(null);R()}
 async function au(){const u=$('#nu').value.trim(),p=$('#np2').value;if(u.length<3||p.length<4)return er('Usuario mín. 3 y contraseña mín. 4');if(db.users.some(z=>z.u.toLowerCase()==u.toLowerCase()))return er('Ese usuario ya existe');await mk(u,p);er('Usuario creado');R()}
 function du(i){const x=db.users[i];ask(`¿Eliminar al usuario «${esc(x.u)}» y todos sus gastos?`,()=>{db.users.splice(i,1);delete db.data[x.u];save();R()})}
 async function cp(){const p=$('#np').value;if(p.length<4)return er('Mín. 4 caracteres');const x=db.users.find(z=>z.u==U);x.s=gen();x.h=await hp(p,x.s);save();$('#np').value='';er('Contraseña cambiada')}
@@ -202,8 +206,11 @@ function bkc(){const q=s=>'"'+String(s).replace(/"/g,'""')+'"';$('#bk').value='f
 function rst(){let j;try{j=JSON.parse($('#bk').value)}catch(e){return er('Respaldo inválido')}
 if(!j||!Array.isArray(j.cats)||!Array.isArray(j.exp))return er('Respaldo inválido');
 ask('Esto reemplazará tus gastos y categorías actuales. ¿Continuar?',()=>{D.cats=j.cats.map(String);D.bud=j.bud||{};D.gb=j.gb||{};D.exp.length=0;j.exp.forEach(e=>{if(e&&e.f&&!isNaN(+e.m)){if(!e.i&&!D.cats.includes(e.c))D.cats.push(String(e.c));D.exp.push({id:String(e.id||Math.random().toString(36).slice(2)),f:String(e.f),n:String(e.n||''),c:String(e.c),m:+e.m,t:String(e.t||''),i:e.i?1:0})}});save();R()})}
-(async()=>{const c=LS.get('cg_lic','');if(c)LIC=await lic(c);U=null;LS.set('cg_ses',null);R()})();
-function lock(){if(U){U=null;D=null;LS.set('cg_ses',null);cl();R()}}
-document.addEventListener('visibilitychange',()=>{if(document.hidden)lock()});addEventListener('pagehide',lock);
+(async()=>{const c=LS.get('cg_lic','');if(c)LIC=await lic(c);const s=SS.get();if(s&&db.data[s.u]&&(!th.to||Date.now()-s.t<th.to*6e4)){U=s.u;D=db.data[U];last=Date.now()}else U=null;R()})();
+function lock(){if(U){U=null;D=null;SS.set(null);cl();R();er('Sesión cerrada por inactividad')}}
+const chk=()=>{if(U&&th.to&&Date.now()-last>th.to*6e4)lock()};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)chk()});
+['touchstart','click','keydown','input','scroll'].forEach(ev=>addEventListener(ev,()=>{if(U&&Date.now()-last>3000)touch()},{passive:true}));
+setInterval(chk,15000);
 if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script></body></html>
