@@ -1,0 +1,166 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#0a0f16"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="MC SYSTEM"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Control de Gastos</title>
+<style>
+*{box-sizing:border-box}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f1ea;--cd:#fff;--tx:#1d1a17;--mu:#7a6f64;--ac:#e8670c;--bd:#eadfd2;--rd:#d63b3b}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0f16;--cd:#131b25;--tx:#eef2f6;--mu:#8b9bab;--ac:#ff8a1f;--bd:#243040;--rd:#ff5a5a}}
+:root[data-theme="dark"]{--bg:#0a0f16;--cd:#131b25;--tx:#eef2f6;--mu:#8b9bab;--ac:#ff8a1f;--bd:#243040;--rd:#ff5a5a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:radial-gradient(ellipse at 50% 0,rgba(255,122,26,.18),transparent 60%) no-repeat,var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;padding-bottom:90px}
+#app{max-width:560px;margin:0 auto;padding:12px}
+h1,h2,h3{margin:8px 0}h3{font-size:16px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:4px 0}
+.chips button{flex:none;padding:8px 14px;border-radius:20px;border:1px solid var(--bd);background:var(--cd);color:var(--tx);font-size:15px}
+.chips .on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.nv{display:flex;align-items:center;justify-content:space-between;margin:8px 0}
+.nv button{width:44px;height:44px;border-radius:12px;border:1px solid var(--bd);background:var(--cd);color:var(--tx);font-size:22px}
+.card{background:var(--cd);border:1px solid var(--bd);border-radius:18px;padding:14px;margin:10px 0;box-shadow:0 6px 20px rgba(0,0,0,.14)}
+.big{font-size:34px;font-weight:800;background:linear-gradient(90deg,#ff5a1f,#ffb300);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mu{color:var(--mu)}.s{font-size:13px}.c{text-align:center;padding:24px 0}
+.lg{display:block;margin:0 auto;filter:drop-shadow(0 0 12px rgba(255,140,30,.5));animation:fl 3s ease-in-out infinite}@keyframes fl{50%{filter:drop-shadow(0 0 22px rgba(255,90,20,.9))}}
+.brand{text-align:center;font-weight:800;letter-spacing:5px;background:linear-gradient(90deg,#19e6b0,#ffb300,#ff4d1a);-webkit-background-clip:text;background-clip:text;color:transparent}.brand.sm{font-size:15px;letter-spacing:3px}
+.pb{height:10px;background:var(--bd);border-radius:5px;overflow:hidden;margin:8px 0}.pb i{display:block;height:100%;background:linear-gradient(90deg,#19c08c,#ffb300);border-radius:5px}
+.ch{display:flex;align-items:flex-end;gap:2px;height:90px;margin:8px 0}.ch div{flex:1;height:100%;display:flex;align-items:flex-end}.ch i{display:block;width:100%;background:var(--ac);border-radius:2px 2px 0 0;min-height:2px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 0}
+.bar{height:6px;background:var(--bd);border-radius:3px}.bar i{display:block;height:100%;background:var(--ac);border-radius:3px}
+.dh{display:flex;justify-content:space-between;margin:16px 4px 6px;color:var(--mu);font-size:14px;text-transform:capitalize}
+.it{display:flex;justify-content:space-between;align-items:center;background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:12px;margin:6px 0;gap:8px}
+input,select,textarea{width:100%;padding:12px;margin:4px 0 8px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit}
+label{font-size:13px;color:var(--mu)}
+.b{padding:13px 16px;border:0;border-radius:12px;background:linear-gradient(135deg,#ff4d1a,#ffb300);color:#fff;font-weight:600;font-size:16px;width:100%;margin:4px 0}
+.b.sm{width:auto;padding:10px 14px;font-size:14px}.b.d{background:var(--rd)}.b.g{background:var(--bd);color:var(--tx)}
+.bt{display:flex;gap:8px;flex-wrap:wrap}.bt .b{flex:1}
+.ic{background:none;border:0;font-size:18px;padding:6px;color:var(--tx)}
+.box{max-width:420px;margin:6vh auto 0}
+.code{font-family:ui-monospace,monospace;font-weight:700;font-size:22px;letter-spacing:2px;text-align:center;padding:14px;background:var(--cd);border:1px dashed var(--ac);border-radius:12px;margin:10px 0;user-select:all}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.sh{background:var(--cd);width:100%;max-width:560px;border-radius:18px 18px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:92vh;overflow:auto}
+#nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-around;align-items:center;background:var(--cd);border-top:1px solid var(--bd);padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));z-index:10}
+#nav button{background:none;border:0;color:var(--mu);display:flex;flex-direction:column;align-items:center;font-size:20px;min-width:70px}
+#nav span{font-size:11px}#nav .a{color:var(--ac)}
+#nav .fab{width:56px;height:56px;min-width:56px;border-radius:50%;background:var(--ac);color:#fff;font-size:30px;margin-top:-26px;box-shadow:0 4px 12px rgba(0,0,0,.3);justify-content:center}
+.tw{overflow-x:auto;background:var(--cd);border:1px solid var(--bd);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:9px 8px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--cd)}
+th{color:var(--mu);font-weight:600}tfoot td{font-weight:700;color:var(--ac)}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:20px;font-size:14px;z-index:30;display:none;max-width:90%}
+</style></head><body>
+<div id="app"></div><div id="nav"></div><div id="modal"></div><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),enc=new TextEncoder(),PUB={"key_ops":["verify"],"ext":true,"kty":"EC","x":"IsLwo9qiXI7aKl7_oIhdIhupRDnXaKKmJW-DrIQQTqA","y":"fa-QCt3-SVpNzce2lEcwFCb8UrI6zOK1ZEGMK9me4zs","crv":"P-256"};
+const mem={};
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v===null?(k in mem?mem[k]:d):JSON.parse(v)}catch(e){return k in mem?mem[k]:d}},set(k,v){mem[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const p2=n=>String(n).padStart(2,'0'),iso=d=>d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()),pd=s=>new Date(s+'T00:00:00');
+const money=n=>'$'+(+n).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fdate=s=>pd(s).toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'});
+const sum=L=>L.reduce((s,e)=>s+e.m,0);
+const b64=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const unb=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')+'==='.slice(0,(4-s.length%4)%4)),c=>c.charCodeAt(0));
+function gen(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',r=crypto.getRandomValues(new Uint8Array(12));return[...r].map(x=>c[x%32]).join('').replace(/(.{4})(.{4})(.{4})/,'$1-$2-$3')}
+async function hp(p,s){const k=await crypto.subtle.importKey('raw',enc.encode(p),'PBKDF2',false,['deriveBits']);return b64(await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(s),iterations:100000,hash:'SHA-256'},k,256))}
+async function lic(c){try{const k=await crypto.subtle.importKey('jwk',PUB,{name:'ECDSA',namedCurve:'P-256'},false,['verify']);return await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},k,unb(c.trim()),enc.encode('CG1:'+dev))}catch(e){return false}}
+let db=LS.get('cg_db',{users:[],data:{}}),dev=LS.get('cg_dev',null),t0=LS.get('cg_t0',null),U=LS.get('cg_ses',null),D,LIC=false,cb,tt;
+let mode='mes',anc=new Date(),rf=iso(new Date()),rt=iso(new Date()),tab='inicio';
+if(!dev){dev=gen();LS.set('cg_dev',dev)}
+if(!t0){t0=Date.now();LS.set('cg_t0',t0)}
+const save=()=>LS.set('cg_db',db),trial=()=>Math.max(0,7-Math.floor((Date.now()-t0)/864e5));
+function er(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',2600)}
+const cl=()=>$('#modal').innerHTML='';
+function ask(m,fn,v){cb=fn;$('#modal').innerHTML=`<div class="ov"><div class="sh"><p>${m}</p>${v!=null?`<input id="ai" value="${esc(v)}">`:''}<div class="bt"><button class="b" onclick="ok()">Aceptar</button><button class="b g" onclick="cl()">Cancelar</button></div></div></div>`}
+function ok(){const v=$('#ai')?$('#ai').value.trim():null,f=cb;cl();f(v)}
+/* ---- periodos ---- */
+function rg(){const y=anc.getFullYear(),m=anc.getMonth(),d=anc.getDate();let a,b;
+if(mode=='dia'){a=new Date(anc);b=new Date(anc)}
+else if(mode=='sem'){a=new Date(y,m,d-(anc.getDay()+6)%7);b=new Date(a.getFullYear(),a.getMonth(),a.getDate()+6)}
+else if(mode=='qui'){a=new Date(y,m,d<=15?1:16);b=d<=15?new Date(y,m,15):new Date(y,m+1,0)}
+else if(mode=='mes'){a=new Date(y,m,1);b=new Date(y,m+1,0)}
+else{a=pd(rf);b=pd(rt);if(a>b)[a,b]=[b,a]}
+return[a,b]}
+function lbl(){const[a,b]=rg(),f=d=>d.toLocaleDateString('es-MX',{day:'numeric',month:'short'});
+if(mode=='dia')return a.toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
+if(mode=='mes')return a.toLocaleDateString('es-MX',{month:'long',year:'numeric'});
+if(mode=='qui')return(a.getDate()==1?'1ª':'2ª')+' quincena · '+a.toLocaleDateString('es-MX',{month:'long',year:'numeric'});
+return f(a)+' – '+f(b)+' '+b.getFullYear()}
+function sm(k){if(k=='rng'){const[a,b]=rg();rf=iso(a);rt=iso(b)}mode=k;R()}
+function sh(n){const y=anc.getFullYear(),m=anc.getMonth(),d=anc.getDate();
+anc=mode=='dia'?new Date(y,m,d+n):mode=='sem'?new Date(y,m,d+7*n):mode=='qui'?(n>0?(d<=15?new Date(y,m,16):new Date(y,m+1,1)):(d>15?new Date(y,m,1):new Date(y,m-1,16))):new Date(y,m+n,1);R()}
+const chips=()=>`<div class="chips">${[['dia','Día'],['sem','Semana'],['qui','Quincena'],['mes','Mes'],['rng','Rango']].map(([k,n])=>`<button class="${mode==k?'on':''}" onclick="sm('${k}')">${n}</button>`).join('')}</div>`;
+const navp=()=>mode=='rng'?`<div class="row"><input type="date" value="${rf}" onchange="rf=this.value;R()"><input type="date" value="${rt}" onchange="rt=this.value;R()"></div>`:`<div class="nv"><button onclick="sh(-1)">‹</button><b style="text-transform:capitalize;text-align:center">${lbl()}</b><button onclick="sh(1)">›</button></div><div class="row"><button class="ic mu" onclick="anc=new Date();R()">Hoy</button><input type="date" style="width:auto" value="${iso(anc)}" onchange="if(this.value){anc=pd(this.value);R()}"></div>`;
+/* ---- vistas ---- */
+function vHome(){const[a,b]=rg(),A=iso(a),B=iso(b),L=D.exp.filter(e=>e.f>=A&&e.f<=B),T=sum(L),bc={};
+L.forEach(e=>bc[e.c]=(bc[e.c]||0)+e.m);const mx=Math.max(1,...Object.values(bc)),days=[...new Set(L.map(e=>e.f))].sort().reverse(),nd=Math.round((b-a)/864e5)+1;
+return `<div class="row"><span style="display:flex;align-items:center;gap:8px">${logo(42)}<span><div class="brand sm" style="text-align:left">MC SYSTEM</div><div class="mu s">👤 ${esc(U)}</div></span></span><span class="mu s">${LIC?'Licencia activa':'Prueba: '+trial()+' día(s)'}</span></div>${chips()}${navp()}
+<div class="card"><div class="mu">Total del periodo</div><div class="big">${money(T)}</div><div class="mu s">${L.length} gasto(s)${L.length?' · promedio por día '+money(T/nd):''}</div></div>
+${bcard(T)}
+${nd>1&&nd<=62&&L.length?chart(a,nd,L):''}
+${Object.keys(bc).length?`<div class="card">${Object.entries(bc).sort((x,y)=>y[1]-x[1]).map(([c,v])=>{const g=mode=='mes'&&D.bud&&D.bud[c];return `<div><div class="row"><span>${esc(c)}</span><b>${money(v)}${g?` <span class="mu s">/ ${money(g)}</span>`:''}</b></div><div class="bar"><i style="width:${Math.min(100,g?v/g*100:v/mx*100)}%;${g&&v>g?'background:var(--rd)':''}"></i></div>${g&&v>g?`<div class="s" style="color:var(--rd)">Excedido por ${money(v-g)}</div>`:''}</div>`}).join('')}</div>`:''}
+${days.map(d=>{const q=L.filter(e=>e.f==d);return `<div class="dh"><span>${fdate(d)}</span><b>${money(sum(q))}</b></div>`+q.map(e=>`<div class="it" onclick="ed('${e.id}')"><div><div>${esc(e.n)}</div><div class="mu s">${esc(e.c)}${e.t?' · '+esc(e.t):''}</div></div><b>${money(e.m)}</b></div>`).join('')}).join('')||'<p class="mu c">Sin gastos en este periodo.<br>Toca ＋ para agregar.</p>'}`}
+const vInst=()=>`<h3>📲 Instalar en tu teléfono</h3><p class="mu s"><b>Android (Chrome):</b> menú ⋮ → «Instalar app» o «Agregar a pantalla de inicio».<br><b>iPhone (Safari):</b> botón Compartir → «Agregar a inicio».</p><p class="mu s"><b>Importante:</b> instala la app primero y crea la cuenta abriéndola desde su ícono. Tus datos se guardan en este teléfono, así que usa Respaldo en Ajustes de vez en cuando.</p>`;
+function logo(s){return `<svg class="lg" viewBox="0 0 120 120" width="${s}" height="${s}"><defs><linearGradient id="gf" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff3d00"/><stop offset=".55" stop-color="#ff9100"/><stop offset="1" stop-color="#ffd54a"/></linearGradient><linearGradient id="gd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2cf0b8"/><stop offset="1" stop-color="#0a7d8c"/></linearGradient></defs><circle cx="60" cy="60" r="57" fill="#0b1218" stroke="url(#gf)" stroke-width="3"/><path d="M50 104C14 100 8 68 28 58C46 49 40 34 30 33" fill="none" stroke="url(#gd)" stroke-width="9" stroke-linecap="round"/><path d="M14 30L33 20L42 29L32 40L20 38Z" fill="url(#gd)"/><path d="M22 24L14 10L32 19ZM33 20L40 8L42 24Z" fill="#19c9a0"/><circle cx="31" cy="30" r="2.4" fill="#ffd54a"/><path d="M30 56L24 50M26 70L19 66M34 88L27 88" stroke="#19c9a0" stroke-width="3" stroke-linecap="round"/><path d="M77 74C67 56 70 38 78 24C86 38 89 56 79 74Z" fill="url(#gf)"/><path d="M72 54C60 54 52 44 54 30C62 38 68 38 74 40ZM82 54C96 56 108 46 108 28C98 38 90 38 82 40Z" fill="url(#gf)"/><path d="M74 66C58 70 50 62 48 52C58 56 66 56 74 56ZM82 66C98 70 108 62 110 50C100 56 92 56 82 56Z" fill="url(#gf)" opacity=".8"/><path d="M76 72C70 88 66 98 73 110C75 98 80 92 77 72ZM80 72C86 88 90 98 84 110C80 98 77 92 79 72Z" fill="url(#gf)"/><circle cx="78" cy="22" r="5" fill="#ffd54a"/><path d="M76 18L78 8L82 18ZM83 22L90 24L83 26Z" fill="#ff9100"/></svg>`}
+const MN={dia:'diario',sem:'semanal',qui:'quincenal',mes:'mensual'};
+function bcard(T){if(mode=='rng')return'';const g=D.gb&&D.gb[mode];
+if(!g)return `<button class="b g" onclick="gb()">＋ Definir presupuesto ${MN[mode]}</button>`;
+const r=g-T,p=Math.min(100,T/g*100);
+return `<div class="card"><div class="row"><b>Presupuesto ${MN[mode]}</b><span><b>${money(g)}</b><button class="ic" onclick="gb()">✎</button></span></div><div class="pb"><i style="width:${p}%;${r<0?'background:var(--rd)':''}"></i></div><div class="row"><span class="mu">Gastado ${money(T)}</span><b style="color:${r<0?'var(--rd)':'#19c08c'}">${r<0?'Excedido '+money(-r):'Disponible '+money(r)}</b></div></div>`}
+function gb(){ask('Presupuesto '+MN[mode]+' (solo número; 0 para quitarlo)',v=>{const n=parseFloat(v);if(isNaN(n)||n<0)return er('Monto inválido');D.gb=D.gb||{};if(n)D.gb[mode]=n;else delete D.gb[mode];save();R()},D.gb&&D.gb[mode]||'')}
+function chart(a,nd,L){const v=[];for(let i=0;i<nd;i++){const f=iso(new Date(a.getFullYear(),a.getMonth(),a.getDate()+i));v.push([f,sum(L.filter(e=>e.f==f))])}const mx=Math.max(1,...v.map(x=>x[1]));
+return `<div class="card"><div class="mu s">Gasto por día (toca una barra para ver ese día)</div><div class="ch">${v.map(([f,t])=>`<div onclick="anc=pd('${f}');mode='dia';R()"><i style="height:${t/mx*100}%"></i></div>`).join('')}</div><div class="row mu s"><span>${pd(v[0][0]).getDate()}</span><span>máx. ${money(mx)}</span><span>${pd(v[nd-1][0]).getDate()}</span></div></div>`}
+function vTabla(){const[a,b]=rg(),A=iso(a),B=iso(b),cs=D.cats,L=D.exp.filter(e=>e.f>=A&&e.f<=B),rows=[];
+for(let d=new Date(a),n=0;d<=b&&n<400;d.setDate(d.getDate()+1),n++){const f=iso(d),q=L.filter(e=>e.f==f);rows.push([f,cs.map(c=>sum(q.filter(e=>e.c==c))),sum(q)])}
+const ct=cs.map(c=>sum(L.filter(e=>e.c==c))),cell=(v,f,i)=>`<td onclick="nw('${f}',${i})">${v?money(v):'<span class="mu">·</span>'}</td>`;
+return `<h2>Tabla</h2>${chips()}${navp()}<p class="mu s">Filas = días, columnas = categorías. Toca una celda para agregar un gasto ahí.</p><div class="tw"><table><thead><tr><th>Día</th>${cs.map(c=>`<th>${esc(c)}</th>`).join('')}<th>Total</th></tr></thead><tbody>${rows.map(([f,v,t])=>`<tr><td onclick="nw('${f}')">${pd(f).toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'short'})}</td>${v.map((x,i)=>cell(x,f,i)).join('')}<td><b>${t?money(t):'·'}</b></td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td>${ct.map(x=>`<td>${money(x)}</td>`).join('')}<td>${money(sum(L))}</td></tr></tfoot></table></div>`}
+function vLic(bl){return `<div class="${bl?'box':''}"><h2>🔑 Activación</h2>${LIC?'<p>Licencia activa ✓</p><div class="code">'+dev+'</div>':`<p class="mu">${bl?'Tu prueba terminó. ':'Prueba: '+trial()+' día(s) restantes. '}Envía este código de dispositivo a quien te vendió la app:</p><div class="code">${dev}</div><p class="mu s">Te dará un código de activación. Pégalo aquí:</p><textarea id="lc" rows="3" placeholder="Código de activación"></textarea><button class="b" onclick="act()">Activar</button>`}</div>`}
+async function act(){const c=$('#lc').value.trim();if(await lic(c)){LIC=true;LS.set('cg_lic',c);er('¡Activada!');R()}else er('Código inválido para este dispositivo')}
+function vLogin(){const f=!db.users.length;return `<div class="box">${logo(130)}<div class="brand" style="font-size:26px;margin-top:8px">MC SYSTEM</div><p class="mu c" style="padding:4px 0 10px;letter-spacing:2px">CONTROL DE GASTOS</p><p class="mu">${f?'Crea tu cuenta de administrador':'Inicia sesión'}</p><input id="lu" placeholder="Usuario" autocapitalize="none"><input id="lp" type="password" placeholder="Contraseña"><button class="b" onclick="${f?'reg()':'login()'}">${f?'Crear cuenta':'Entrar'}</button></div><div class="card" style="max-width:420px;margin:14px auto 0">${vLic(false)}</div><div class="card" style="max-width:420px;margin:14px auto 0">${vInst()}</div>`}
+function vSet(){const adm=db.users[0].u==U;return `<h2>Ajustes</h2>
+<div class="card"><h3>Categorías (columnas)</h3>${D.cats.map((c,i)=>`<div class="row"><span>${esc(c)}${D.bud&&D.bud[c]?` <span class="mu s">· presup. ${money(D.bud[c])}</span>`:''}</span><span><button class="ic" onclick="bd(${i})">💲</button><button class="ic" onclick="rn(${i})">✎</button><button class="ic" onclick="dc(${i})">🗑</button></span></div>`).join('')}<div class="row"><input id="ac" placeholder="Nueva categoría"><button class="b sm" onclick="addc()">Agregar</button></div></div>
+<div class="card"><h3>Mi contraseña</h3><input id="np" type="password" placeholder="Nueva contraseña"><button class="b sm" onclick="cp()">Cambiar</button></div>
+${adm?`<div class="card"><h3>Usuarios</h3>${db.users.map((x,i)=>`<div class="row"><span>${esc(x.u)}${i?'':' (admin)'}</span>${i?`<button class="ic" onclick="du(${i})">🗑</button>`:''}</div>`).join('')}<input id="nu" placeholder="Usuario nuevo" autocapitalize="none"><input id="np2" type="password" placeholder="Contraseña"><button class="b sm" onclick="au()">Crear usuario</button></div>`:''}
+<div class="card"><h3>Respaldo</h3><textarea id="bk" rows="4" placeholder="Aquí aparece el respaldo (cópialo). Para restaurar, pégalo aquí."></textarea><div class="bt"><button class="b sm" onclick="$('#bk').value=JSON.stringify(D)">Respaldo</button><button class="b sm g" onclick="bkc()">CSV</button><button class="b sm g" onclick="rst()">Restaurar</button></div></div>
+<div class="card">${vLic(false)}</div><div class="card">${vInst()}</div><button class="b d" onclick="out()">Cerrar sesión</button>`}
+function R(){const blk=!LIC&&trial()<=0;let h,nv=true;
+if(blk){h=vLic(true);nv=false}else if(!U||!D){h=vLogin();nv=false}else h=({inicio:vHome,tabla:vTabla,ajustes:vSet})[tab]();
+$('#app').innerHTML=h;
+$('#nav').innerHTML=nv?`<button class="${tab=='inicio'?'a':''}" onclick="tab='inicio';R()">🏠<span>Inicio</span></button><button class="${tab=='tabla'?'a':''}" onclick="tab='tabla';R()">▦<span>Tabla</span></button><button class="fab" onclick="mod()">＋</button><button class="${tab=='ajustes'?'a':''}" onclick="tab='ajustes';R()">⚙️<span>Ajustes</span></button>`:''}
+/* ---- usuarios ---- */
+async function mk(u,p){const s=gen();db.users.push({u,s,h:await hp(p,s)});db.data[u]={cats:['Comida','Transporte','Servicios','Otros'],exp:[]};save()}
+function ses(u){U=u;LS.set('cg_ses',u);D=db.data[u];tab='inicio';R()}
+async function reg(){const u=$('#lu').value.trim(),p=$('#lp').value;if(u.length<3||p.length<4)return er('Usuario mín. 3 y contraseña mín. 4 caracteres');await mk(u,p);ses(u)}
+async function login(){const u=$('#lu').value.trim().toLowerCase(),x=db.users.find(z=>z.u.toLowerCase()==u);if(!x||await hp($('#lp').value,x.s)!=x.h)return er('Usuario o contraseña incorrectos');ses(x.u)}
+function out(){U=null;D=null;LS.set('cg_ses',null);R()}
+async function au(){const u=$('#nu').value.trim(),p=$('#np2').value;if(u.length<3||p.length<4)return er('Usuario mín. 3 y contraseña mín. 4');if(db.users.some(z=>z.u.toLowerCase()==u.toLowerCase()))return er('Ese usuario ya existe');await mk(u,p);er('Usuario creado');R()}
+function du(i){const x=db.users[i];ask(`¿Eliminar al usuario «${esc(x.u)}» y todos sus gastos?`,()=>{db.users.splice(i,1);delete db.data[x.u];save();R()})}
+async function cp(){const p=$('#np').value;if(p.length<4)return er('Mín. 4 caracteres');const x=db.users.find(z=>z.u==U);x.s=gen();x.h=await hp(p,x.s);save();$('#np').value='';er('Contraseña cambiada')}
+/* ---- categorías ---- */
+function addc(){const v=$('#ac').value.trim();if(!v||D.cats.includes(v))return er('Nombre vacío o repetido');D.cats.push(v);save();R()}
+function rn(i){const o=D.cats[i];ask('Nuevo nombre de la categoría',v=>{if(!v||D.cats.includes(v))return er('Nombre inválido o repetido');D.exp.forEach(e=>{if(e.c==o)e.c=v});if(D.bud&&D.bud[o]){D.bud[v]=D.bud[o];delete D.bud[o]}D.cats[i]=v;save();R()},o)}
+function bd(i){const c=D.cats[i];ask('Presupuesto mensual de «'+esc(c)+'» (solo número; 0 para quitarlo)',v=>{const n=parseFloat(v);if(isNaN(n)||n<0)return er('Monto inválido');D.bud=D.bud||{};if(n)D.bud[c]=n;else delete D.bud[c];save();R()},D.bud&&D.bud[c]||'')}
+function dc(i){if(D.cats.length<2)return er('Debe quedar al menos una categoría');const c=D.cats[i];ask(`¿Eliminar «${esc(c)}»? Sus gastos pasarán a otra categoría.`,()=>{D.cats.splice(i,1);const t=D.cats.includes('Otros')?'Otros':D.cats[0];D.exp.forEach(e=>{if(e.c==c)e.c=t});if(D.bud)delete D.bud[c];save();R()})}
+/* ---- gastos ---- */
+const nw=(f,i)=>mod(null,f,i!=null?D.cats[i]:null),ed=id=>mod(D.exp.find(e=>e.id==id));
+function mod(e,f,c){const x=e||{f:f||iso(new Date()),n:'',c:c||D.cats[0],m:'',t:''};
+$('#modal').innerHTML=`<div class="ov"><div class="sh"><h2>${e?'Editar':'Nuevo'} gasto</h2>
+<label>Fecha</label><input id="mf" type="date" value="${x.f}">
+<label>Concepto</label><input id="mn" list="dl" value="${esc(x.n)}" placeholder="Ej. Almuerzo"><datalist id="dl">${[...new Set(D.exp.map(z=>z.n))].slice(0,60).map(n=>`<option value="${esc(n)}">`).join('')}</datalist>
+<label>Categoría (columna)</label><select id="mc" onchange="$('#nc').style.display=this.value=='__n'?'block':'none'">${D.cats.map(k=>`<option ${k==x.c?'selected':''}>${esc(k)}</option>`).join('')}<option value="__n">＋ Nueva categoría…</option></select><input id="nc" style="display:none" placeholder="Nombre de la categoría">
+<label>Monto</label><input id="mm" type="number" inputmode="decimal" step="0.01" value="${x.m}">
+<label>Nota (opcional)</label><input id="mt" value="${esc(x.t)}">
+<div class="bt"><button class="b" onclick="sv('${e?e.id:''}')">Guardar</button>${e?`<button class="b d" onclick="dl('${e.id}')">Eliminar</button>`:`<button class="b g" onclick="sv('',1)">Guardar y otro</button>`}<button class="b g" onclick="cl()">Cancelar</button></div></div></div>`}
+function sv(id,again){let c=$('#mc').value;if(c=='__n'){c=$('#nc').value.trim();if(!c)return er('Escribe el nombre de la categoría')}
+const o={f:$('#mf').value,n:$('#mn').value.trim(),c,m:parseFloat($('#mm').value),t:$('#mt').value.trim()};
+if(!o.f||!o.n||isNaN(o.m)||o.m<0)return er('Completa fecha, concepto y monto');
+if(!D.cats.includes(c))D.cats.push(c);
+if(id)Object.assign(D.exp.find(e=>e.id==id),o);else D.exp.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),...o});
+save();const[a,b]=rg();if(o.f<iso(a)||o.f>iso(b)){anc=pd(o.f);if(mode=='rng')rf=rt=o.f}
+cl();R();if(again){mod(null,o.f);er('Guardado')}}
+function dl(id){ask('¿Eliminar este gasto?',()=>{D.exp=D.exp.filter(e=>e.id!=id);save();R()})}
+/* ---- respaldo ---- */
+function bkc(){const q=s=>'"'+String(s).replace(/"/g,'""')+'"';$('#bk').value='fecha,concepto,categoria,monto,nota\n'+[...D.exp].sort((x,y)=>x.f<y.f?-1:1).map(e=>[e.f,q(e.n),q(e.c),e.m,q(e.t)].join(',')).join('\n')}
+function rst(){let j;try{j=JSON.parse($('#bk').value)}catch(e){return er('Respaldo inválido')}
+if(!j||!Array.isArray(j.cats)||!Array.isArray(j.exp))return er('Respaldo inválido');
+ask('Esto reemplazará tus gastos y categorías actuales. ¿Continuar?',()=>{D.cats=j.cats.map(String);D.bud=j.bud||{};D.gb=j.gb||{};D.exp.length=0;j.exp.forEach(e=>{if(e&&e.f&&!isNaN(+e.m)){if(!D.cats.includes(e.c))D.cats.push(String(e.c));D.exp.push({id:String(e.id||Math.random().toString(36).slice(2)),f:String(e.f),n:String(e.n||''),c:String(e.c),m:+e.m,t:String(e.t||'')})}});save();R()})}
+(async()=>{const c=LS.get('cg_lic','');if(c)LIC=await lic(c);U=null;LS.set('cg_ses',null);R()})();
+function lock(){if(U){U=null;D=null;LS.set('cg_ses',null);cl();R()}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)lock()});addEventListener('pagehide',lock);
+</script></body></html>
